@@ -1,11 +1,18 @@
 import random
 
 class Cliente():
-    def __init__(self, nome: str, telefone: str, email:str, id: str):
+    ids_existentes = []  
+    
+    def __init__(self, nome: str, telefone: str, email:str):
         self.__nome = nome
         self.__telefone = telefone
         self.__email = email
-        self.__id = id
+        
+        self.__id = random.randint(1000, 9999)
+        while self.__id in Cliente.ids_existentes:
+            self.__id = random.randint(1000, 9999)
+        
+        Cliente.ids_existentes.append(self.__id)
 
     def get_nome(self):
         return self.__nome
@@ -121,7 +128,7 @@ class Gerenciador():
             "telefone": cliente.get_telefone(),
             "email": cliente.get_email(),
             "quarto": numero_quarto,
-            "id": id,
+            "id": cliente.get_id(),
             "checkin": checkin,
             "checkout": checkout,
             "status": status
