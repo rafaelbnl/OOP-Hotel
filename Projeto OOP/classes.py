@@ -2,16 +2,15 @@ import random
 
 class Cliente():
     ids_existentes = []  
+    ultimo_id = 1000
     
     def __init__(self, nome: str, telefone: str, email:str):
         self.__nome = nome
         self.__telefone = telefone
         self.__email = email
         
-        self.__id = random.randint(1000, 9999)
-        while self.__id in Cliente.ids_existentes:
-            self.__id = random.randint(1000, 9999)
-        
+        self.__id = Cliente.ultimo_id
+        Cliente.ultimo_id += 1        
         Cliente.ids_existentes.append(self.__id)
 
     def get_nome(self):
@@ -26,15 +25,13 @@ class Cliente():
     def get_id(self):
         return self.__id
     
-    def set_nome(self):
-        novo_nome = input("\nDigite o novo nome: ")
+    def set_nome(self, novo_nome):
         self.__nome = novo_nome
-    def set_telefone(self):
-        novo_telefone = input("\nDigite o novo telefone: ")
+
+    def set_telefone(self,novo_telefone):
         self.__telefone = novo_telefone
 
-    def set_email(self):
-        novo_email = input("\nDigite o novo email: ")
+    def set_email(self, novo_email):
         self.__email = novo_email
 
     def set_id(self):
@@ -48,6 +45,15 @@ class Quarto():
         self.diaria = diaria
         self.status = status
 
+class Reserva:
+    def __init__(self, cliente: Cliente, quarto: Quarto, checkin: str, checkout: str, status:str):
+        self.cliente = cliente
+        self.quarto = quarto
+        self.checkin = checkin
+        self.checkout = checkout
+        self.status = status
+        
+
 class Hotel():
     def __init__(self, nome:str, logradouro:str, numero:int, rede:str):
         self.nome = nome
@@ -58,56 +64,54 @@ class Hotel():
 
     def cadastrar_quarto(self, numero:int, tipo:str, diaria:float, status:str):
         quarto = Quarto(numero, tipo, diaria, status)
+        if status == "s":
+            quarto.status = "Disponível"
+        if status == "n":
+            quarto.status = "Indisponível"
         self.lista_de_quartos.append(quarto)
 
-    def editar_quarto(self):
+    def editar_quarto(self, numero, nova_diaria: float, novo_status: str):
         if not self.lista_de_quartos:
             return "\nNenhum quarto cadastrado."
-        quarto_editado = int(input("\nDigite o número do quarto que deseja editar: "))
         for quarto in self.lista_de_quartos:
-            if quarto.numero == quarto_editado:
-                alterar_diaria = input("\nDeseja alterar a diária do quarto? (s/n)")
-                if alterar_diaria == "s":
-                    nova_diaria = float(input("\nDigite o novo valor da diária: "))
-                    quarto.diaria = nova_diaria
-                    return "\nValor da diária atualizado"
-                elif alterar_diaria == "n":
-                    pass
-                else:
-                    return "\nResponda apenas sim ou não"
-                alterar_status = input("\nDeseja alterar o status do quarto? (s/n)")
-                if alterar_status == "s":
-                    novo_status = input("\nO quarto está disponível? (s/n)")
-                    if novo_status == "s":
-                        quarto.status = "Disponível"
-                        return print(f"Quarto {quarto.numero} disponibilizado")
-                    elif novo_status == "n":
-                        quarto.status = "Indisponível"
-                        return print(f"Quarto {quarto.numero} reservado")
-                    else:
-                        return "\nResponda apenas sim ou não"
+            if quarto.numero == numero:
+                quarto.diaria = nova_diaria
+                quarto.status = novo_status
+            
                     
-    def excluir_quarto(self):
+    def excluir_quarto(self, numero):
         if not self.lista_de_quartos:
             return "\nNenhum quarto cadastrado."
-        quarto_excluido = int(input("\nDigite o número do quarto a ser excluído: "))
         for quarto in self.lista_de_quartos:
-            if quarto.numero == quarto_excluido:
+            if quarto.numero == numero:
                 self.lista_de_quartos.remove(quarto)
-                print("\nQuarto excluído")
-
+        
+        
     def listar_quartos(self):
-        for quarto in self.lista_de_quartos:
-            if quarto.status == "Disponível":
-                print("\nQuartos disponíveis: ")
-                print("----------------------------------------")
-                print(f"Número: {quarto.numero} | Tipo: {quarto.tipo.title()} | Diária: R${quarto.diaria:.2f}")
-            elif quarto.status == "Indisponível":
-                print("\nQuartos indisponíveis: ")
-                print("----------------------------------------")
-                print(f"Número: {quarto.numero} | Tipo: {quarto.tipo.title()} | Diária: R${quarto.diaria:.2f}")
-        return "----------------------------------------"
+        if not self.lista_de_quartos:
+            return {"disponíveis": [], "indisponíveis": []}
+        
+        disponiveis = []
+        indisponiveis = []
 
+        for quarto in self.lista_de_quartos:
+            info = {
+                "numero": quarto.numero,
+                "tipo": quarto.tipo,
+                "diaria": quarto.diaria,
+                "status": quarto.status,
+            }
+
+        if quarto.status == "Disponível":
+            disponiveis.append(info)
+        else:
+            indisponiveis.append(info)
+        
+        return {
+            "disponiveis": disponiveis,
+            "indisponiveis": indisponiveis
+        }
+        
 class Gerenciador():
     def __init__(self, hotel:str):
         self.hotel = hotel
@@ -115,113 +119,54 @@ class Gerenciador():
         self.lista_de_ids = []
     
     def verificar_disponibilidade(self):
-        print(self.hotel.listar_quartos())
+        return self.hotel.listar_quartos()
 
-    def criar_reserva(self, cliente: Cliente, numero_quarto: int, checkin: str, checkout: str, status:str):
+    def criar_reserva(self, cliente: Cliente, numero_quarto: int, checkin: str, checkout: str, status: str):
+        quarto_encontrado = None
+        for quarto in self.hotel.lista_de_quartos:
+            if quarto.numero == numero_quarto:
+                quarto_encontrado = quarto
+                break
+        if not quarto_encontrado:
+            return "Quarto não encontrado"
+        
+        if quarto_encontrado.status != "Disponível":
+            return "Quarto não está disponível"
+        
+        reserva = Reserva(
+            cliente=cliente,
+            quarto=quarto_encontrado,
+            checkin=checkin,
+            checkout=checkout,
+            status=status
+        )
 
-        id = random.randint(1000, 9999)
-        while id in self.lista_de_ids:
-            id = random.randint(1000, 9999)
-
-        reserva = {
-            "nome": cliente.get_nome(),
-            "telefone": cliente.get_telefone(),
-            "email": cliente.get_email(),
-            "quarto": numero_quarto,
-            "id": cliente.get_id(),
-            "checkin": checkin,
-            "checkout": checkout,
-            "status": status
-        }
+        quarto_encontrado.status = "Indisponível"
 
         self.lista_de_reservas.append(reserva)
 
+        return f"Reserva criada para {cliente.get_nome()} (ID: {cliente.get_id()})"
+
     def listar_reservas(self):
-        print("Reservas confirmadas")
-        print("--------------------")
         if not self.lista_de_reservas:
             return "Não há reservas cadastradas"
         for reserva in self.lista_de_reservas:
-            print(f"Nome: {reserva['nome']} | ID: {reserva['id']} | Quarto: {reserva['quarto']} | Check-in: {reserva["checkin"]} | Check-out: {reserva["checkout"]} | Status: {reserva["status"]}")
+            return f"Nome: {reserva['nome']} | ID: {reserva['id']} | Quarto: {reserva['quarto']} | Check-in: {reserva['checkin']} | Check-out: {reserva['checkout']} | Status: {reserva['status']}"
 
-    def editar_dados_reserva(self, reserva):
-        print("""
-        O que deseja modificar?
-        1 - Nome do hóspede
-        2 - Quarto alocado
-        3 - Data de check-in
-        4 - Data de check-out
-        5 - Status da reserva
-        """)
-        opt_reserva = int(input("Digite a opção desejada: "))
-        
-        match opt_reserva:
-            case 1:
-                novo_nome = input("Digite o novo nome do hóspede: ")
-                reserva["nome"] = novo_nome
-                return "Nome alterado com sucesso"
-            case 2:
-                novo_quarto = int(input("Digite o novo quarto alocado: "))
-                reserva["quarto"] = novo_quarto
-                return "Quarto alterado com sucesso"
-            case 3:
-                novo_checkin = input("Digite a nova data de check-in: ")
-                reserva["checkin"] = novo_checkin
-                return "Data de check-in alterada com sucesso"
-            case 4:
-                novo_checkout = input("Digite a nova data de check-out: ")
-                reserva["checkout"] = novo_checkout
-                return "Data de check-out alterada com sucesso"
-            case 5:
-                novo_status = input("Digite o novo status da reserva: ")
-                reserva["status"] = novo_status
-                return "Status da reserva alterado com sucesso"
-            case _:
-                return "Opção inválida"
+    def modificar_reserva(self, id_cliente: int, novo_quarto: int, novo_checkin:str, novo_checkout:str, novo_status:str):
+        for reserva in self.lista_de_reservas:
+            if reserva.cliente.get_id() == id_cliente:
+                reserva.cliente.quarto = novo_quarto
+                reserva.cliente.checkin = novo_checkin
+                reserva.cliente.checkout = novo_checkout
+                reserva.cliente.status = novo_status
+        return "Reserva atualizada"
 
-    def modificar_reserva(self):
-        opt = int(input("Buscar reserva por ID (1) ou número do quarto (2)? "))
-        
-        match opt:
-            case 1:
-                id = int(input("Digite o ID do hóspede: "))
-                for reserva in self.lista_de_reservas:
-                    if reserva["id"] == id:
-                        return self.editar_dados_reserva(reserva)
-                return "Reserva não encontrada"
-            
-            case 2:
-                quarto = int(input("Digite o número do quarto: "))
-                for reserva in self.lista_de_reservas:
-                    if reserva["quarto"] == quarto:
-                        return self.editar_dados_reserva(reserva)
-                return "Reserva não encontrada"
-            
-            case _:
-                return "Opção inválida"
-            
-    def cancelar_reserva(self):
-        opt = int(input("Buscar reserva por ID (1) ou número do quarto (2)? "))
-        
-        match opt:
-            case 1:
-                id = int(input("Digite o ID do hóspede: "))
-                for reserva in self.lista_de_reservas:
-                    if reserva["id"] == id:
-                        self.lista_de_reservas.remove(reserva)
-                        return "Reserva cancelada"
-                return "Reserva não encontrada"
-            
-            case 2:
-                quarto = int(input("Digite o número do quarto: "))
-                for reserva in self.lista_de_reservas:
-                    if reserva["quarto"] == quarto:
-                        self.lista_de_reservas.remove(reserva)
-                        return "Reserva cancelada"
-                return "Reserva não encontrada"
-            
-            case _:
-                return "Opção inválida"
+    def cancelar_reserva(self, id_cliente: int):
+        for reserva in self.lista_de_reservas:
+            if reserva.cliente.get_id() == id_cliente:
+                self.lista_de_reservas.remove(reserva)
+        return "Reserva cancelada"
             
     def listar_informacoes(self):
         for reserva in self.lista_de_reservas:
