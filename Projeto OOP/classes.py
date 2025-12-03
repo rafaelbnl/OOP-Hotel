@@ -102,21 +102,20 @@ class Hotel():
                 "status": quarto.status,
             }
 
-        if quarto.status == "Disponível":
-            disponiveis.append(info)
-        else:
-            indisponiveis.append(info)
-        
+            if quarto.status == "Disponível":
+                disponiveis.append(info)
+            else:
+                indisponiveis.append(info)
+            
         return {
-            "disponiveis": disponiveis,
-            "indisponiveis": indisponiveis
-        }
+                "disponiveis": disponiveis,
+                "indisponiveis": indisponiveis
+            }
         
 class Gerenciador():
     def __init__(self, hotel:str):
         self.hotel = hotel
         self.lista_de_reservas = []
-        self.lista_de_ids = []
     
     def verificar_disponibilidade(self):
         return self.hotel.listar_quartos()
@@ -151,23 +150,24 @@ class Gerenciador():
         if not self.lista_de_reservas:
             return "Não há reservas cadastradas"
         for reserva in self.lista_de_reservas:
-            return f"Nome: {reserva['nome']} | ID: {reserva['id']} | Quarto: {reserva['quarto']} | Check-in: {reserva['checkin']} | Check-out: {reserva['checkout']} | Status: {reserva['status']}"
+            print(f"Nome: {reserva.cliente.get_nome()} | ID: {reserva.cliente.get_id()} | Quarto: {reserva.quarto} | Check-in: {reserva.checkin} | Check-out: {reserva.checkout} | Status: {reserva.status}")
 
-    def modificar_reserva(self, id_cliente: int, novo_quarto: int, novo_checkin:str, novo_checkout:str, novo_status:str):
+    def modificar_reserva(self, id_cliente: int, novo_quarto: Quarto, novo_checkin:str, novo_checkout:str, novo_status:str):
         for reserva in self.lista_de_reservas:
             if reserva.cliente.get_id() == id_cliente:
-                reserva.cliente.quarto = novo_quarto
-                reserva.cliente.checkin = novo_checkin
-                reserva.cliente.checkout = novo_checkout
-                reserva.cliente.status = novo_status
+                reserva.quarto = novo_quarto
+                reserva.checkin = novo_checkin
+                reserva.checkout = novo_checkout
+                reserva.status = novo_status
         return "Reserva atualizada"
 
     def cancelar_reserva(self, id_cliente: int):
         for reserva in self.lista_de_reservas:
             if reserva.cliente.get_id() == id_cliente:
                 self.lista_de_reservas.remove(reserva)
+                reserva.quarto.status = "Disponível"
         return "Reserva cancelada"
             
     def listar_informacoes(self):
         for reserva in self.lista_de_reservas:
-            print(f"Nome: {reserva['nome']} | Telefone: {reserva['telefone']} | E-mail: {reserva['email']}")
+            print(f"Nome: {reserva.nome} | Telefone: {reserva.telefone} | E-mail: {reserva.email}")
