@@ -1,7 +1,4 @@
-import random
-
 class Cliente():
-    ids_existentes = []  
     ultimo_id = 1000
     
     def __init__(self, nome: str, telefone: str, email:str):
@@ -9,9 +6,8 @@ class Cliente():
         self.__telefone = telefone
         self.__email = email
         
-        self.__id = Cliente.ultimo_id
-        Cliente.ultimo_id += 1        
-        Cliente.ids_existentes.append(self.__id)
+        self.__id = Cliente.ultimo_id # cria primeiro cliente com ID único = 1000
+        Cliente.ultimo_id += 1        # faz com que o próximo cliente tenha ID único incrementado
 
     def get_nome(self):
         return self.__nome
@@ -34,25 +30,60 @@ class Cliente():
     def set_email(self, novo_email):
         self.__email = novo_email
 
-    def set_id(self):
-        """Não é possível editar o ID"""
-        return None
-
 class Quarto():
     def __init__(self, numero:int, tipo:str, diaria:float, status:str):
-        self.numero = numero
-        self.tipo = tipo
-        self.diaria = diaria
-        self.status = status
+        self.__numero = numero
+        self.__tipo = tipo
+        self.__diaria = diaria
+        self.__status = status
+
+    def get_numero(self):
+        return self.__numero
+    def get_tipo(self):
+        return self.__tipo
+    def get_diaria(self):
+        return self.__diaria
+    def get_status(self):
+        return self.__status
+
+    def set_numero(self, novo_numero):
+        self.__numero = novo_numero
+    def set_tipo(self, novo_tipo):
+        self.__tipo = novo_tipo
+    def set_diaria(self, nova_diaria):
+        self.__diaria = nova_diaria
+    def set_status(self, novo_status):
+        self.__status = novo_status
 
 class Reserva:
     def __init__(self, cliente: Cliente, quarto: Quarto, checkin: str, checkout: str, status:str):
-        self.cliente = cliente
-        self.quarto = quarto
-        self.checkin = checkin
-        self.checkout = checkout
-        self.status = status
-        
+        self.__cliente = cliente
+        self.__quarto = quarto
+        self.__checkin = checkin
+        self.__checkout = checkout
+        self.__status = status
+
+    def get_cliente(self):
+        return self.__cliente
+    def get_quarto(self):
+        return self.__quarto
+    def get_checkin(self):
+        return self.__checkin
+    def get_checkout(self):
+        return self.__checkout
+    def get_status(self):
+        return self.__status
+
+    def set_cliente(self, novo_cliente):
+        self.__cliente = novo_cliente
+    def set_quarto(self, novo_quarto):
+        self.__quarto = novo_quarto
+    def set_checkin(self, novo_checkin):
+        self.__checkin = novo_checkin
+    def set_checkout(self, novo_checkout):
+        self.__checkout = novo_checkout
+    def set_status(self, novo_status):
+        self.__status = novo_status
 
 class Hotel():
     def __init__(self, nome:str, logradouro:str, numero:int, rede:str):
