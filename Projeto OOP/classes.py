@@ -20,7 +20,7 @@ class Cliente():
     
     def get_id(self):
         return self.__id
-    
+    #sem setter para id; fixo 
     def set_nome(self, novo_nome):
         self.__nome = novo_nome
 
@@ -46,6 +46,7 @@ class Quarto():
     def get_status(self):
         return self.__status
 
+# sem setter pra número; fixo 
     def set_tipo(self, novo_tipo):
         self.__tipo = novo_tipo
     def set_diaria(self, nova_diaria):
