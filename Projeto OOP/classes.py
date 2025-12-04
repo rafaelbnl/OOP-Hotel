@@ -21,13 +21,13 @@ class Cliente():
     def get_id(self):
         return self.__id
     #sem setter para id; fixo 
-    def set_nome(self, novo_nome):
+    def set_nome(self, novo_nome:str):
         self.__nome = novo_nome
 
-    def set_telefone(self,novo_telefone):
+    def set_telefone(self,novo_telefone:str):
         self.__telefone = novo_telefone
 
-    def set_email(self, novo_email):
+    def set_email(self, novo_email:str):
         self.__email = novo_email
 
 class Quarto():
