@@ -136,10 +136,10 @@ class Hotel():
         email = input("Digite o e-mail do cliente: ")
         cliente = Cliente(nome=nome, telefone=telefone, email=email)
         self.__lista_de_clientes.append(cliente)
-        return f"Cliente {nome} cadastrado"
+        return f"Cliente {nome}.title() cadastrado"
 
     def listar_clientes(self):
-        if not self.lista_de_clientes:
+        if not self.__lista_de_clientes:
             return "\nNenhum cliente cadastrado"
 
         for cliente in self.__lista_de_clientes:
@@ -151,6 +151,7 @@ class Hotel():
                     E-mail: {cliente.get_email()}
                     ==================================
                     """)
+            return "Fim da lista de clientes"
 
     def editar_cliente(self):
         cliente_modificado = input("Digite o nome do cliente a modificar: ")
@@ -265,7 +266,7 @@ class Gerenciador():
         numero_quarto = input("Digite o numero do quarto alocado: ")
         checkin = input("Digite a data do check-in: ")
         checkout = input("Digite a data do check-out: ")
-        status = Indisponível
+        status = "Indisponível"
         reserva = Reserva(cliente=cliente, quarto=numero_quarto, checkin=checkin, checkout=checkout, status=status)
         self.__lista_de_reservas.append(reserva)
         return "Reserva criada com sucesso"
@@ -274,7 +275,20 @@ class Gerenciador():
         if not self.__lista_de_reservas:
             return "Não há reservas cadastradas"
         for reserva in self.__lista_de_reservas:
-            print(f"Nome: {reserva.cliente} | Quarto: {reserva.quarto} | Check-in: {reserva.checkin} | Check-out: {reserva.checkout} | Status: {reserva.status}")
+            cliente = reserva.get_cliente()
+            quarto = reserva.get_quarto()
+            print(f"""
+                    ===INFORMAÇÕES DA RESERVA====================
+                    ID da Reserva: {reserva.get_id()}
+                    Cliente: {cliente.get_nome().title()}
+                    Quarto: {quarto.get_numero()}
+                    Check-in: {reserva.get_checkin()}
+                    Check-out: {reserva.get_checkout()}
+                    Status: {reserva.get_status().title()}
+                    ============================================
+                    """)
+        return "Fim da lista de reservas"
+
 
     def modificar_reserva(self):
         reserva_modificada = input("Digite o ID da reserva a modificar: ")
