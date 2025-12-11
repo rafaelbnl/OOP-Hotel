@@ -260,25 +260,59 @@ class Gerenciador():
     def verificar_disponibilidade(self):
         return self.__hotel.listar_quartos()
 
-    def criar_reserva(self, cliente: Cliente, numero_quarto: int, checkin: str, checkout: str, status: str):
-        pass
+    def criar_reserva(self):
+        cliente = input("Digite o nome do cliente: ")
+        numero_quarto = input("Digite o numero do quarto alocado: ")
+        checkin = input("Digite a data do check-in: ")
+        checkout = input("Digite a data do check-out: ")
+        status = Indisponível
+        reserva = Reserva(cliente=cliente, quarto=numero_quarto, checkin=checkin, checkout=checkout, status=status)
+        self.__lista_de_reservas.append(reserva)
+        return "Reserva criada com sucesso"
 
     def listar_reservas(self):
         if not self.__lista_de_reservas:
             return "Não há reservas cadastradas"
         for reserva in self.__lista_de_reservas:
-            print(f"Nome: {reserva.get_cliente().get_nome()} | ID: {reserva.get_cliente().get_id()} | Quarto: {reserva.get_quarto().get_numero()} | Check-in: {reserva.get_checkin()} | Check-out: {reserva.get_checkout()} | Status: {reserva.get_status()}")
+            print(f"Nome: {reserva.cliente} | Quarto: {reserva.quarto} | Check-in: {reserva.checkin} | Check-out: {reserva.checkout} | Status: {reserva.status}")
 
-    def modificar_reserva(self, id_cliente: int, novo_quarto: Quarto, novo_checkin:str, novo_checkout:str, novo_status:str):
+    def modificar_reserva(self):
+        reserva_modificada = input("Digite o ID da reserva a modificar: ")
         for reserva in self.__lista_de_reservas:
-            if reserva.get_cliente().get_id() == id_cliente:
-                reserva.set_quarto(novo_quarto)
-                reserva.set_checkin(novo_checkin)
-                reserva.set_checkout(novo_checkout)
-                reserva.set_status(novo_status)
-        return "Reserva atualizada"
+            if reserva.get_id() == reserva_modificada:
+                while True:
+                    modificar = input("""Modificar:
+                                        1 - Cliente
+                                        2 - Quarto
+                                        3 - Check-in
+                                        4 - Check-out
+                                        5 - Status
+                                        """)
+                    match modificar:
+                        case "1":
+                            novo_cliente = input("Digite o novo cliente: ")
+                            reserva.set_cliente(novo_cliente)
+                            return "\nCliente modificado"
+                        case "2":
+                            novo_quarto = input("Digite o novo quarto: ")
+                            reserva.set_quarto(novo_quarto)
+                            return "\nQuarto modificado"
+                        case "3":
+                            novo_checkin = input("Digite o novo check-in: ")
+                            reserva.set_checkin(novo_checkin)
+                            return "\nCheck-in modificado"
+                        case "4":
+                            novo_checkout = input("Digite o novo check-out: ")
+                            reserva.set_checkout(novo_checkout)
+                            return "\nCheck-out modificado"
+                        case "5":
+                            novo_status = input("Digite o novo status: ")
+                            reserva.set_status(novo_status)
+                            return "\nStatus modificado"
+            
 
-    def cancelar_reserva(self, id_cliente: int):
+    def cancelar_reserva(self):
+        reserva_cancelada = input("Digite o nome do cliente para cancelar a reserva: ")
         for reserva in self.__lista_de_reservas:
             if reserva.get_cliente().get_id() == id_cliente:
                 self.__lista_de_reservas.remove(reserva)

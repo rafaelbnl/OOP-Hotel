@@ -78,15 +78,21 @@ def main():
                         """)
                     match menu:
                         case "1":
-                            refugio.criar_reserva()
+                            mensagem = refugio.criar_reserva()
+                            print(mensagem)
                         case "2":
-                            ...
+                            mensagem = refugio.listar_reservas()    
+                            print(mensagem)
                         case "3":
-                            ...
+                            mensagem = refugio.editar_reserva()
+                            print(mensagem)
                         case "4":
-                            ...
+                            mensagem = refugio.excluir_reserva()
+                            print(mensagem)
                         case "5":
-                            ...
+                            break
+                        case _:
+                            print("Opção inválida")
             case "0":
                 print("Saindo do sistema...")
                 break
