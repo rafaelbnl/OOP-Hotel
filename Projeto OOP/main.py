@@ -69,14 +69,14 @@ def main():
                             print("Opção inválida")
             case "3":
                 while True:
-                    menu = input("""
+                    menu_reservas = input("""
                         1 - Criar reserva
                         2 - Listar reservas
                         3 - Editar reserva
                         4 - Excluir reserva
                         5 - Voltar
                         """)
-                    match menu:
+                    match menu_reservas:
                         case "1":
                             mensagem = refugio.criar_reserva()
                             print(mensagem)
