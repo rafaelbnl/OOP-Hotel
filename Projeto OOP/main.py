@@ -1,4 +1,5 @@
-from classes import Cliente, Quarto, Hotel, Gerenciador, Reserva
+from hotel import Hotel
+from gerenciador import Gerenciador
 
 hotel1 = Hotel(nome="Refúgio dos Sonhos", logradouro="Rua da Paz", numero=123, rede="Accor")
 refugio = Gerenciador(hotel1)
