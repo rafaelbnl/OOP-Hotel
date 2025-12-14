@@ -93,6 +93,7 @@ def main():
                             break
                         case _:
                             print("Opção inválida")
+
             case "0":
                 print("Saindo do sistema...")
                 break

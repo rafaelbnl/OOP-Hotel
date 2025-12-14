@@ -7,7 +7,7 @@ class Cliente():
         self.__email = email
         
 # cria primeiro cliente com ID único = 1000
-# faz com que o próximo cliente tenha ID único incrementado
+# faz com que o próximo cliente tenha ID único incremental
 
         self.__id = Cliente.ultimo_id 
         Cliente.ultimo_id += 1        
@@ -131,12 +131,15 @@ class Hotel():
         self.__rede = nova_rede
 
     def cadastrar_cliente(self):
-        nome = input("Digite o nome do cliente: ")
-        telefone = input("Digite o telefone do cliente: ")
-        email = input("Digite o e-mail do cliente: ")
-        cliente = Cliente(nome=nome, telefone=telefone, email=email)
-        self.__lista_de_clientes.append(cliente)
-        return f"Cliente {nome}.title() cadastrado"
+        try:
+            nome = input("Digite o nome do cliente: ")
+            telefone = input("Digite o telefone do cliente: ")
+            email = input("Digite o e-mail do cliente: ")
+            cliente = Cliente(nome=nome, telefone=telefone, email=email)
+            self.__lista_de_clientes.append(cliente)
+            return f"Cliente {nome.title()} cadastrado"
+        except Exception as e:
+            return f"Erro ao cadastrar cliente: {e}"
 
     def listar_clientes(self):
         if not self.__lista_de_clientes:
@@ -154,45 +157,57 @@ class Hotel():
             return "Fim da lista de clientes"
 
     def editar_cliente(self):
-        cliente_modificado = input("Digite o nome do cliente a modificar: ")
+        cliente_modificado = int(input("Digite o ID do cliente a modificar: "))
         for cliente in self.__lista_de_clientes:
-            if cliente.get_nome().lower() == cliente_modificado.lower():
-                while True:
-                    modificar = input("""Modificar:
-                                        1 - Nome
-                                        2 - Telefone
-                                        3 - E-mail
-                                        """)
-                    match modificar:
-                        case "1":
-                            novo_nome = input("Digite o novo nome: ")
-                            cliente.set_nome(novo_nome)
-                            return "\nNome modificado"
-                        case "2":
-                            novo_telefone = input("Digite o novo telefone: ")
-                            cliente.set_telefone(novo_telefone)
-                            return "\nTelefone modificado"
-                        case "3":
-                            novo_email = input("Digite o novo e-mail: ")
-                            cliente.set_email(novo_email)
-                            return "\nE-mail modificado"
+            if cliente.get_id() == cliente_modificado:
+                try:
+                    while True:
+                        modificar = input("""Modificar:
+                                            1 - Nome
+                                            2 - Telefone
+                                            3 - E-mail
+                                            4 - Voltar
+                                            """)
+                        match modificar:
+                            case "1":
+                                novo_nome = input("Digite o novo nome: ")
+                                cliente.set_nome(novo_nome)
+                                return "\nNome modificado"
+                            case "2":
+                                novo_telefone = input("Digite o novo telefone: ")
+                                cliente.set_telefone(novo_telefone)
+                                return "\nTelefone modificado"
+                            case "3":
+                                novo_email = input("Digite o novo e-mail: ")
+                                cliente.set_email(novo_email)
+                                return "\nE-mail modificado"
+                            case "4":
+                                return "\nOperação cancelada"
+                            case _:
+                                print("\nOpção inválida")
+                except:
+                    return "\nErro ao modificar cliente"
+        return f"\nCliente '{cliente_modificado}' não encontrado"
 
     def excluir_cliente(self):
-        cliente_excluido = input("Digite o nome do cliente a excluir: ")
+        cliente_excluido = int(input("Digite o ID do cliente a excluir: "))
         for cliente in self.__lista_de_clientes:
-            if cliente.get_nome() == cliente_excluido:
+            if cliente.get_id() == cliente_excluido:
                 self.__lista_de_clientes.remove(cliente)
                 return f"Cliente {cliente.get_nome()} excluído"
 
 
     def cadastrar_quarto(self):
-        numero = int(input("Digite o número do quarto: "))
-        tipo = input("Digite o tipo de quarto: ")
-        diaria = input("Digite o valor da diária: ")
-        status = "Disponível"
-        quarto = Quarto(numero=numero, tipo=tipo, diaria=diaria, status=status)
-        self.__lista_de_quartos.append(quarto)
-        return f"\nQuarto {numero} cadastrado com sucesso!"
+        try:
+            numero = int(input("Digite o número do quarto: "))
+            tipo = input("Digite o tipo de quarto: ")
+            diaria = float(input("Digite o valor da diária: "))
+            status = "Disponível"
+            quarto = Quarto(numero=numero, tipo=tipo, diaria=diaria, status=status)
+            self.__lista_de_quartos.append(quarto)
+            return f"\nQuarto {numero} cadastrado com sucesso!"
+        except Exception as e:
+            return f"\nErro ao cadastrar quarto: {e}"
 
     def editar_quarto(self):
         if not self.__lista_de_quartos: 
@@ -200,36 +215,42 @@ class Hotel():
         quarto_modificado = int(input("Digite o número do quarto a modificar: "))
         for quarto in self.__lista_de_quartos:
             if quarto.get_numero() == quarto_modificado:
-                while True:
-                    submenu = input("""
-1 - Diaria
-2 - Status
-3 - Voltar
-""")
-                    match submenu:
-                        case "1":
-                            nova_diaria = float(input("Digite o voo valor da diária: "))
-                            quarto.set_diaria(nova_diaria)
-                            return "Valor da diária atualizado"
-                        case "2":
-                            novo_status = input("Digite o novo status: ")
-                            quarto.set_status(novo_status)
-                            return f"Status do quarto atualizado. Novo status: {novo_status}"
-                        case "3":
-                            break
-                        case _:
-                            return "Opção inválida"
+                try:
+                    while True:
+                        submenu = input("""
+                            1 - Diaria
+                            2 - Status
+                            3 - Voltar
+                            """)
+                        match submenu:
+                            case "1":
+                                nova_diaria = float(input("Digite o voo valor da diária: "))
+                                quarto.set_diaria(nova_diaria)
+                                return "Valor da diária atualizado"
+                            case "2":
+                                novo_status = input("Digite o novo status: ")
+                                quarto.set_status(novo_status)
+                                return f"Status do quarto atualizado. Novo status: {novo_status}"
+                            case "3":
+                                break
+                            case _:
+                                return "Opção inválida"
+                except Exception as e:
+                    return f"Erro ao modificar quarto: {e}"
         
             
                     
     def excluir_quarto(self):
         if not self.__lista_de_quartos:
             return "\nNenhum quarto cadastrado."
-        quarto_excluido = int(input("Digite o número do quarto a excluir: "))
-        for quarto in self.__lista_de_quartos:
-            if quarto.get_numero() == quarto_excluido:
-                self.__lista_de_quartos.remove(quarto)
-                return f"\nQuarto {quarto_excluido} excluído com sucesso!"
+        try:
+            quarto_excluido = int(input("Digite o número do quarto a excluir: "))
+            for quarto in self.__lista_de_quartos:
+                if quarto.get_numero() == quarto_excluido:
+                    self.__lista_de_quartos.remove(quarto)
+                    return f"\nQuarto {quarto_excluido} excluído com sucesso!"
+        except Exception as e:
+            return f"\nErro ao excluir quarto: {e}"
         return f"\nQuarto {quarto_excluido} não encontrado."
         
         
@@ -262,14 +283,39 @@ class Gerenciador():
         return self.__hotel.listar_quartos()
 
     def criar_reserva(self):
-        cliente = input("Digite o nome do cliente: ")
-        numero_quarto = input("Digite o numero do quarto alocado: ")
+        # Buscar cliente
+        nome_cliente = input("Digite o nome do cliente: ")
+        cliente_encontrado = None
+        for cliente in self.__hotel.get_lista_de_clientes():
+            if cliente.get_nome().lower() == nome_cliente.lower():
+                cliente_encontrado = cliente
+                break
+        
+        if not cliente_encontrado:
+            return f"\nCliente '{nome_cliente}' não encontrado. Cadastre o cliente primeiro."
+        
+        # Buscar quarto
+        numero_quarto = int(input("Digite o numero do quarto alocado: "))
+        quarto_encontrado = None
+        for quarto in self.__hotel.get_lista_de_quartos():
+            if quarto.get_numero() == numero_quarto:
+                quarto_encontrado = quarto
+                break
+        
+        if not quarto_encontrado:
+            return f"\nQuarto {numero_quarto} não encontrado."
+        
+        if quarto_encontrado.get_status().lower() != "disponível":
+            return f"\nQuarto {numero_quarto} não está disponível."
+        
         checkin = input("Digite a data do check-in: ")
         checkout = input("Digite a data do check-out: ")
-        status = "Indisponível"
-        reserva = Reserva(cliente=cliente, quarto=numero_quarto, checkin=checkin, checkout=checkout, status=status)
+        status = "Ativa"
+        
+        reserva = Reserva(cliente=cliente_encontrado, quarto=quarto_encontrado, checkin=checkin, checkout=checkout, status=status)
+        quarto_encontrado.set_status("ocupado")
         self.__lista_de_reservas.append(reserva)
-        return "Reserva criada com sucesso"
+        return f"\nReserva criada com sucesso! ID: {reserva.get_id()}"
 
     def listar_reservas(self):
         if not self.__lista_de_reservas:
@@ -284,58 +330,46 @@ class Gerenciador():
                     Quarto: {quarto.get_numero()}
                     Check-in: {reserva.get_checkin()}
                     Check-out: {reserva.get_checkout()}
-                    Status: {reserva.get_status().title()}
+                    Status: {reserva.get_status()}
                     ============================================
                     """)
-        return "Fim da lista de reservas"
 
-
-    def modificar_reserva(self):
-        reserva_modificada = input("Digite o ID da reserva a modificar: ")
+    def editar_reserva(self):
+        reserva_modificada = int(input("Digite o ID da reserva a modificar: "))
         for reserva in self.__lista_de_reservas:
             if reserva.get_id() == reserva_modificada:
                 while True:
                     modificar = input("""Modificar:
-                                        1 - Cliente
-                                        2 - Quarto
-                                        3 - Check-in
-                                        4 - Check-out
-                                        5 - Status
+                                        1 - Check-in
+                                        2 - Check-out
+                                        3 - Status
+                                        4 - Voltar
                                         """)
                     match modificar:
                         case "1":
-                            novo_cliente = input("Digite o novo cliente: ")
-                            reserva.set_cliente(novo_cliente)
-                            return "\nCliente modificado"
-                        case "2":
-                            novo_quarto = input("Digite o novo quarto: ")
-                            reserva.set_quarto(novo_quarto)
-                            return "\nQuarto modificado"
-                        case "3":
-                            novo_checkin = input("Digite o novo check-in: ")
+                            novo_checkin = input("Digite a nova data de check-in: ")
                             reserva.set_checkin(novo_checkin)
                             return "\nCheck-in modificado"
-                        case "4":
-                            novo_checkout = input("Digite o novo check-out: ")
+                        case "2":
+                            novo_checkout = input("Digite a nova data de check-out: ")
                             reserva.set_checkout(novo_checkout)
                             return "\nCheck-out modificado"
-                        case "5":
-                            novo_status = input("Digite o novo status: ")
+                        case "3":
+                            novo_status = input("Digite o novo status da reserva: ")
                             reserva.set_status(novo_status)
                             return "\nStatus modificado"
+                        case "4":
+                            return "\nOperação cancelada"
+                        case _:
+                            print("\nOpção inválida")
             
 
-    def cancelar_reserva(self):
-        reserva_cancelada = input("Digite o nome do cliente para cancelar a reserva: ")
+    def excluir_reserva(self):
+        reserva_cancelada = int(input("Digite o ID da reserva a cancelar: "))
         for reserva in self.__lista_de_reservas:
-            if reserva.get_cliente().get_id() == id_cliente:
+            if reserva.get_id() == reserva_cancelada:
+                quarto = reserva.get_quarto()
+                quarto.set_status("disponível")
                 self.__lista_de_reservas.remove(reserva)
-                reserva.get_quarto().set_status("disponível")
-        return "Reserva cancelada"
-            
-    def listar_informacoes(self):
-        for reserva in self.__lista_de_reservas:
-            cliente = reserva.get_cliente()
-            print(f"Nome: {cliente.get_nome()} | Telefone: {cliente.get_telefone()} | E-mail: {cliente.get_email()}")
-
-
+                return f"Reserva {reserva_cancelada} cancelada"
+        return f"Reserva {reserva_cancelada} não encontrada"
