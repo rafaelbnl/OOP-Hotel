@@ -1,5 +1,6 @@
 from hotel import Hotel
 from reserva import Reserva
+import database as db
 
 class Gerenciador():
     def __init__(self, hotel:Hotel):
@@ -55,6 +56,14 @@ class Gerenciador():
         reserva = Reserva(cliente=cliente_encontrado, quarto=quarto_encontrado, checkin=checkin, checkout=checkout, status=status)
         quarto_encontrado.status = "ocupado"
         self.__lista_de_reservas.append(reserva)
+        # Salva no banco de dados
+        try:
+            conexao_db = db.conectar_db()
+            db.inserir_reserva(conexao_db, cliente_encontrado.id, quarto_encontrado.numero, checkin, checkout, status)
+            db.atualizar_quarto(conexao_db, quarto_encontrado.numero, status="ocupado")
+            conexao_db.close()
+        except Exception as e:
+            return f"Erro ao salvar reserva no banco: {e}"
         return f"\nReserva criada com sucesso! ID: {reserva.id}"
 
     def listar_reservas(self):
@@ -91,14 +100,32 @@ class Gerenciador():
                                 case "1":
                                     novo_checkin = input("Digite a nova data de check-in: ")
                                     reserva.checkin = novo_checkin
+                                    try:
+                                        conexao_db = db.conectar_db()
+                                        db.atualizar_reserva(conexao_db, reserva_modificada, checkin=novo_checkin)
+                                        conexao_db.close()
+                                    except Exception as e:
+                                        return f"Erro ao atualizar no banco: {e}"
                                     return "\nCheck-in modificado"
                                 case "2":
                                     novo_checkout = input("Digite a nova data de check-out: ")
                                     reserva.checkout = novo_checkout
+                                    try:
+                                        conexao_db = db.conectar_db()
+                                        db.atualizar_reserva(conexao_db, reserva_modificada, checkout=novo_checkout)
+                                        conexao_db.close()
+                                    except Exception as e:
+                                        return f"Erro ao atualizar no banco: {e}"
                                     return "\nCheck-out modificado"
                                 case "3":
                                     novo_status = input("Digite o novo status da reserva: ")
                                     reserva.status = novo_status
+                                    try:
+                                        conexao_db = db.conectar_db()
+                                        db.atualizar_reserva(conexao_db, reserva_modificada, status=novo_status)
+                                        conexao_db.close()
+                                    except Exception as e:
+                                        return f"Erro ao atualizar no banco: {e}"
                                     return "\nStatus modificado"
                                 case "4":
                                     return "\nOperação cancelada"
@@ -117,6 +144,14 @@ class Gerenciador():
                     quarto = reserva.quarto
                     quarto.status = "disponível"
                     self.__lista_de_reservas.remove(reserva)
+                    # Remove do banco de dados
+                    try:
+                        conexao_db = db.conectar_db()
+                        db.excluir_reserva(conexao_db, reserva_cancelada)
+                        db.atualizar_quarto(conexao_db, quarto.numero, status="disponível")
+                        conexao_db.close()
+                    except Exception as e:
+                        return f"Erro ao excluir do banco: {e}"
                     return f"Reserva {reserva_cancelada} cancelada"
         except Exception as e:
             return f"Erro ao cancelar reserva: {e}"

@@ -1,5 +1,6 @@
 from cliente import Cliente
 from quarto import Quarto
+import database as db
 
 class Hotel():
     def __init__(self, nome: str, logradouro: str, numero: int, rede: str):
@@ -9,6 +10,9 @@ class Hotel():
         self.__rede = rede
         self.__lista_de_quartos = []
         self.__lista_de_clientes = []
+        self.__conexao_db = db.conectar_db()
+        db.criar_tabelas(self.__conexao_db)
+
 
     def get_nome(self):
         return self.__nome
@@ -41,6 +45,8 @@ class Hotel():
             email = input("Digite o e-mail do cliente: ")
             cliente = Cliente(nome=nome, telefone=telefone, email=email)
             self.__lista_de_clientes.append(cliente)
+            # Salva no banco de dados
+            db.inserir_cliente(self.__conexao_db, nome, telefone, email)
             return f"Cliente {nome.title()} cadastrado"
         except Exception as e:
             return f"Erro ao cadastrar cliente: {e}"
@@ -76,14 +82,17 @@ class Hotel():
                             case "1":
                                 novo_nome = input("Digite o novo nome: ")
                                 cliente.nome = novo_nome
+                                db.atualizar_cliente(self.__conexao_db, cliente_modificado, nome=novo_nome)
                                 return "\nNome modificado"
                             case "2":
                                 novo_telefone = input("Digite o novo telefone: ")
                                 cliente.telefone = novo_telefone
+                                db.atualizar_cliente(self.__conexao_db, cliente_modificado, telefone=novo_telefone)
                                 return "\nTelefone modificado"
                             case "3":
                                 novo_email = input("Digite o novo e-mail: ")
                                 cliente.email = novo_email
+                                db.atualizar_cliente(self.__conexao_db, cliente_modificado, email=novo_email)
                                 return "\nE-mail modificado"
                             case "4":
                                 return "\nOperação cancelada"
@@ -98,6 +107,7 @@ class Hotel():
         for cliente in self.__lista_de_clientes:
             if cliente.id == cliente_excluido:
                 self.__lista_de_clientes.remove(cliente)
+                db.excluir_cliente(self.__conexao_db, cliente_excluido)
                 return f"Cliente {cliente.nome} excluído"
 
 
@@ -106,9 +116,11 @@ class Hotel():
             numero = int(input("Digite o número do quarto: "))
             tipo = input("Digite o tipo de quarto: ")
             diaria = float(input("Digite o valor da diária: "))
-            status = "Disponível"
+            status = "disponível"
             quarto = Quarto(numero=numero, tipo=tipo, diaria=diaria, status=status)
             self.__lista_de_quartos.append(quarto)
+            # Salva no banco de dados
+            db.inserir_quarto(self.__conexao_db, numero, tipo, diaria, status)
             return f"\nQuarto {numero} cadastrado com sucesso!"
         except Exception as e:
             return f"\nErro ao cadastrar quarto: {e}"
@@ -128,12 +140,14 @@ class Hotel():
                             """)
                         match submenu:
                             case "1":
-                                nova_diaria = float(input("Digite o voo valor da diária: "))
+                                nova_diaria = float(input("Digite o novo valor da diária: "))
                                 quarto.diaria = nova_diaria
+                                db.atualizar_quarto(self.__conexao_db, quarto_modificado, diaria=nova_diaria)
                                 return "Valor da diária atualizado"
                             case "2":
                                 novo_status = input("Digite o novo status: ")
                                 quarto.status = novo_status
+                                db.atualizar_quarto(self.__conexao_db, quarto_modificado, status=novo_status)
                                 return f"Status do quarto atualizado. Novo status: {novo_status}"
                             case "3":
                                 break
@@ -152,6 +166,7 @@ class Hotel():
             for quarto in self.__lista_de_quartos:
                 if quarto.numero == quarto_excluido:
                     self.__lista_de_quartos.remove(quarto)
+                    db.excluir_quarto(self.__conexao_db, quarto_excluido)
                     return f"\nQuarto {quarto_excluido} excluído com sucesso!"
         except Exception as e:
             return f"\nErro ao excluir quarto: {e}"
