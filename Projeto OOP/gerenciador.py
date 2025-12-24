@@ -6,15 +6,14 @@ class Gerenciador():
         self.__hotel = hotel
         self.__lista_de_reservas = []
 
-    def get_hotel(self):
+    @property
+    def hotel(self):
         return self.__hotel
     
-    def get_lista_de_reservas(self):
+    @property
+    def lista_de_reservas(self):
         return self.__lista_de_reservas
     
-    def verificar_disponibilidade(self):
-        return self.__hotel.listar_quartos()
-
     def criar_reserva(self):
         # Buscar cliente
         try:
