@@ -21,7 +21,7 @@ class Gerenciador():
             nome_cliente = input("Digite o nome do cliente: ")
             cliente_encontrado = None
             for cliente in self.__hotel.get_lista_de_clientes():
-                if cliente.get_nome().lower() == nome_cliente.lower():
+                if cliente.nome.lower() == nome_cliente.lower():
                     cliente_encontrado = cliente
                     break
         except Exception as e:
@@ -35,7 +35,7 @@ class Gerenciador():
             numero_quarto = int(input("Digite o numero do quarto alocado: "))
             quarto_encontrado = None
             for quarto in self.__hotel.get_lista_de_quartos():
-                if quarto.get_numero() == numero_quarto:
+                if quarto.numero == numero_quarto:
                     quarto_encontrado = quarto
                     break
         except Exception as e:
@@ -44,7 +44,7 @@ class Gerenciador():
         if not quarto_encontrado:
             return f"\nQuarto {numero_quarto} não encontrado."
         
-        if quarto_encontrado.get_status().lower() != "disponível":
+        if quarto_encontrado.status.lower() != "disponível":
             return f"\nQuarto {numero_quarto} não está disponível."
         try:
             checkin = input("Digite a data do check-in: ")
@@ -54,24 +54,24 @@ class Gerenciador():
             return f"Erro ao criar reserva: {e}"
         
         reserva = Reserva(cliente=cliente_encontrado, quarto=quarto_encontrado, checkin=checkin, checkout=checkout, status=status)
-        quarto_encontrado.set_status("ocupado")
+        quarto_encontrado.status = "ocupado"
         self.__lista_de_reservas.append(reserva)
-        return f"\nReserva criada com sucesso! ID: {reserva.get_id()}"
+        return f"\nReserva criada com sucesso! ID: {reserva.id}"
 
     def listar_reservas(self):
         if not self.__lista_de_reservas:
             return "Não há reservas cadastradas"
         for reserva in self.__lista_de_reservas:
-            cliente = reserva.get_cliente()
-            quarto = reserva.get_quarto()
+            cliente = reserva.cliente
+            quarto = reserva.quarto
             print(f"""
                     ===INFORMAÇÕES DA RESERVA====================
-                    ID da Reserva: {reserva.get_id()}
-                    Cliente: {cliente.get_nome().title()}
-                    Quarto: {quarto.get_numero()}
-                    Check-in: {reserva.get_checkin()}
-                    Check-out: {reserva.get_checkout()}
-                    Status: {reserva.get_status()}
+                    ID da Reserva: {reserva.id}
+                    Cliente: {cliente.nome.title()}
+                    Quarto: {quarto.numero}
+                    Check-in: {reserva.checkin}
+                    Check-out: {reserva.checkout}
+                    Status: {reserva.status}
                     ============================================
                     """)
 
@@ -79,7 +79,7 @@ class Gerenciador():
         try:
             reserva_modificada = int(input("Digite o ID da reserva a modificar: "))
             for reserva in self.__lista_de_reservas:
-                if reserva.get_id() == reserva_modificada:
+                if reserva.id == reserva_modificada:
                     try:
                         while True:
                             modificar = input("""Modificar:
@@ -91,15 +91,15 @@ class Gerenciador():
                             match modificar:
                                 case "1":
                                     novo_checkin = input("Digite a nova data de check-in: ")
-                                    reserva.set_checkin(novo_checkin)
+                                    reserva.checkin = novo_checkin
                                     return "\nCheck-in modificado"
                                 case "2":
                                     novo_checkout = input("Digite a nova data de check-out: ")
-                                    reserva.set_checkout(novo_checkout)
+                                    reserva.checkout = novo_checkout
                                     return "\nCheck-out modificado"
                                 case "3":
                                     novo_status = input("Digite o novo status da reserva: ")
-                                    reserva.set_status(novo_status)
+                                    reserva.status = novo_status
                                     return "\nStatus modificado"
                                 case "4":
                                     return "\nOperação cancelada"
@@ -114,9 +114,9 @@ class Gerenciador():
         try:
             reserva_cancelada = int(input("Digite o ID da reserva a cancelar: "))
             for reserva in self.__lista_de_reservas:
-                if reserva.get_id() == reserva_cancelada:
-                    quarto = reserva.get_quarto()
-                    quarto.set_status("disponível")
+                if reserva.id == reserva_cancelada:
+                    quarto = reserva.quarto
+                    quarto.status = "disponível"
                     self.__lista_de_reservas.remove(reserva)
                     return f"Reserva {reserva_cancelada} cancelada"
         except Exception as e:

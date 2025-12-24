@@ -5,23 +5,43 @@ class Quarto():
         self.__diaria = diaria
         self.__status = status
 
-    def get_numero(self):
+    @property
+    def numero(self):
+        """Retorna o número do quarto."""
         return self.__numero
-    def get_tipo(self):
-        return self.__tipo
-    def get_diaria(self):
-        return self.__diaria
-    def get_status(self):
-        return self.__status
+    @numero.setter
+    def numero(self, novo_numero:int):
+        """Define o número do quarto."""
+        self.__numero = novo_numero
 
-# sem setter pra número; fixo 
-    def set_tipo(self, novo_tipo):
+    @property
+    def tipo(self):
+        """Retorna o tipo do quarto."""
+        return self.__tipo
+    @tipo.setter
+    def tipo(self, novo_tipo:str):
+        """Define o tipo do quarto."""
         self.__tipo = novo_tipo
-    def set_diaria(self, nova_diaria):
+
+    @property
+    def diaria(self):
+        """Retorna o valor da diária do quarto."""
+        return self.__diaria
+    @diaria.setter
+    def diaria(self, nova_diaria:float):
+        """Define o valor da diária do quarto."""
         self.__diaria = nova_diaria
-    def set_status(self, novo_status):
+
+    @property
+    def status(self):
+        """Retorna o status do quarto."""
+        return self.__status
+    @status.setter
+    def status(self, novo_status:str):
+        """Define o status do quarto."""
         status_validos = ["disponível", "ocupado"]
         if novo_status in status_validos:
             self.__status = novo_status
         else:
             print(f"\nStatus inválido! Use: {status_validos}")
+

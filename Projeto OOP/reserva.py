@@ -13,26 +13,61 @@ class Reserva:
         self.__id = Reserva.ultimo_id
         Reserva.ultimo_id += 1
 
-    def get_cliente(self):
+    @property
+    def cliente(self):
+        """Retorna o cliente da reserva."""
         return self.__cliente
-    def get_quarto(self):
-        return self.__quarto
-    def get_checkin(self):
-        return self.__checkin
-    def get_checkout(self):
-        return self.__checkout
-    def get_status(self):
-        return self.__status
-    def get_id(self):
-        return self.__id
-# sem setter pra mudar id; fixo
-    def set_cliente(self, novo_cliente):
+
+    @cliente.setter
+    def cliente(self, novo_cliente: Cliente):
+        """Define o cliente da reserva."""
         self.__cliente = novo_cliente
-    def set_quarto(self, novo_quarto):
+
+    @property
+    def quarto(self):
+        """Retorna o quarto da reserva."""
+        return self.__quarto
+    
+    @quarto.setter
+    def quarto(self, novo_quarto: Quarto):
+        """Define o quarto da reserva."""
         self.__quarto = novo_quarto
-    def set_checkin(self, novo_checkin):
-        self.__checkin = novo_checkin
-    def set_checkout(self, novo_checkout):
-        self.__checkout = novo_checkout
-    def set_status(self, novo_status):
-        self.__status = novo_status
+
+    @property
+    def checkin(self):
+        """Retorna a data de check-in da reserva."""
+        return self.__checkin
+    
+    @checkin.setter
+    def checkin(self, nova_data_checkin: str):
+        """Define a data de check-in da reserva."""
+        self.__checkin = nova_data_checkin
+
+    @property
+    def checkout(self):
+        """Retorna a data de check-out da reserva."""
+        return self.__checkout
+    
+    @checkout.setter
+    def checkout(self, nova_data_checkout: str):
+        """Define a data de check-out da reserva."""
+        self.__checkout = nova_data_checkout
+
+    @property
+    def status(self):
+        """Retorna o status da reserva."""
+        return self.__status
+    
+    @status.setter
+    def status(self, novo_status: str):
+        """Define o status da reserva."""
+        status_validos = ["ativa", "cancelada", "concluída"]
+        if novo_status in status_validos:
+            self.__status = novo_status
+        else:
+            print(f"\nStatus inválido! Use: {status_validos}")
+
+    @property
+    def id(self):
+        """Retorna o ID único da reserva (somente leitura)."""
+        return self.__id

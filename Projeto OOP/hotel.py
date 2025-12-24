@@ -52,10 +52,10 @@ class Hotel():
         for cliente in self.__lista_de_clientes:
             print(f"""
                     ===INFORMAÇÕES====================
-                    ID: {cliente.get_id()}
-                    Nome: {cliente.get_nome().title()}
-                    Telefone: {cliente.get_telefone()}
-                    E-mail: {cliente.get_email()}
+                    ID: {cliente.id}
+                    Nome: {cliente.nome.title()}
+                    Telefone: {cliente.telefone}
+                    E-mail: {cliente.email}
                     ==================================
                     """)
             return "Fim da lista de clientes"
@@ -63,7 +63,7 @@ class Hotel():
     def editar_cliente(self):
         cliente_modificado = int(input("Digite o ID do cliente a modificar: "))
         for cliente in self.__lista_de_clientes:
-            if cliente.get_id() == cliente_modificado:
+            if cliente.id == cliente_modificado:
                 try:
                     while True:
                         modificar = input("""Modificar:
@@ -75,15 +75,15 @@ class Hotel():
                         match modificar:
                             case "1":
                                 novo_nome = input("Digite o novo nome: ")
-                                cliente.set_nome(novo_nome)
+                                cliente.nome = novo_nome
                                 return "\nNome modificado"
                             case "2":
                                 novo_telefone = input("Digite o novo telefone: ")
-                                cliente.set_telefone(novo_telefone)
+                                cliente.telefone = novo_telefone
                                 return "\nTelefone modificado"
                             case "3":
                                 novo_email = input("Digite o novo e-mail: ")
-                                cliente.set_email(novo_email)
+                                cliente.email = novo_email
                                 return "\nE-mail modificado"
                             case "4":
                                 return "\nOperação cancelada"
@@ -96,9 +96,9 @@ class Hotel():
     def excluir_cliente(self):
         cliente_excluido = int(input("Digite o ID do cliente a excluir: "))
         for cliente in self.__lista_de_clientes:
-            if cliente.get_id() == cliente_excluido:
+            if cliente.id == cliente_excluido:
                 self.__lista_de_clientes.remove(cliente)
-                return f"Cliente {cliente.get_nome()} excluído"
+                return f"Cliente {cliente.nome} excluído"
 
 
     def cadastrar_quarto(self):
@@ -118,7 +118,7 @@ class Hotel():
             return "\nNenhum quarto cadastrado"
         quarto_modificado = int(input("Digite o número do quarto a modificar: "))
         for quarto in self.__lista_de_quartos:
-            if quarto.get_numero() == quarto_modificado:
+            if quarto.numero == quarto_modificado:
                 try:
                     while True:
                         submenu = input("""
@@ -129,11 +129,11 @@ class Hotel():
                         match submenu:
                             case "1":
                                 nova_diaria = float(input("Digite o voo valor da diária: "))
-                                quarto.set_diaria(nova_diaria)
+                                quarto.diaria = nova_diaria
                                 return "Valor da diária atualizado"
                             case "2":
                                 novo_status = input("Digite o novo status: ")
-                                quarto.set_status(novo_status)
+                                quarto.status = novo_status
                                 return f"Status do quarto atualizado. Novo status: {novo_status}"
                             case "3":
                                 break
@@ -150,7 +150,7 @@ class Hotel():
         try:
             quarto_excluido = int(input("Digite o número do quarto a excluir: "))
             for quarto in self.__lista_de_quartos:
-                if quarto.get_numero() == quarto_excluido:
+                if quarto.numero == quarto_excluido:
                     self.__lista_de_quartos.remove(quarto)
                     return f"\nQuarto {quarto_excluido} excluído com sucesso!"
         except Exception as e:
@@ -164,11 +164,11 @@ class Hotel():
     
         print("\nQuartos disponíveis:")
         for quarto in self.__lista_de_quartos:
-            if quarto.get_status() == "disponível":
-                print(f"Quarto {quarto.get_numero()} - {quarto.get_tipo().title()} - R${quarto.get_diaria()}")
+            if quarto.status == "disponível":
+                print(f"Quarto {quarto.numero} - {quarto.tipo.title()} - R${quarto.diaria}")
     
         print("\nQuartos indisponíveis:")
         for quarto in self.__lista_de_quartos:
-            if quarto.get_status() != "disponível":
-                print(f"Quarto {quarto.get_numero()} - {quarto.get_tipo().title()} - R${quarto.get_diaria()}")
+            if quarto.status != "disponível":
+                print(f"Quarto {quarto.numero} - {quarto.tipo.title()} - R${quarto.diaria}")
         
